@@ -6,7 +6,9 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
 from shufflenet import ShuffleNet
-from MobileNetV2 import MobileNetV2
+from mobilenet import MobileNet
+from torchsummary import summary
+import time
 
 
 parser = argparse.ArgumentParser(description='PyTorch Emotion Training')
@@ -17,7 +19,7 @@ args = parser.parse_args()
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 trainset = torchvision.datasets.ImageFolder(root='./outputs/train', transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=4, num_workers=2)
+trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=32, num_workers=2)
 
 testset = torchvision.datasets.ImageFolder(root='./outputs/val', transform=transform)
 testloader = torch.utils.data.DataLoader(testset, shuffle=False, batch_size=4, num_workers=2)
@@ -27,8 +29,10 @@ classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 's
 model = ShuffleNet()
 
 if args.model == 'MobileNet' :
-    model = MobileNetV2()
+    model = MobileNet()
 
+
+summary(model, (3,224,224))
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
 
@@ -68,6 +72,9 @@ for epoch in range(90):  # loop over the dataset multiple times
 
     print('finished epoch %d' % epoch)
     print('calculating accuracy')
+    
+    start_time = time.time()
+
 
     model.train(False)
     
@@ -79,8 +86,15 @@ for epoch in range(90):  # loop over the dataset multiple times
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum()
+        
+        # your code
+    elapsed_time = time.time() - start_time
     accuracy = (100 * correct / total)
     print('Accuracy of the network on the test images: %d %%' % accuracy)
+    print('Took %d seconds to validate' % elapsed_time)
+
+    
+    
     
     if accuracy > max_accuracy :
         torch.save(model, args.model + ".pt")
