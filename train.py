@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
-from shufflenet import ShuffleNet
+from shufflenet2 import ShuffleNet
 from mobilenet import MobileNet
 from torchsummary import summary
 import time
@@ -19,10 +19,10 @@ args = parser.parse_args()
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 trainset = torchvision.datasets.ImageFolder(root='./outputs/train', transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=32, num_workers=2)
+trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=16, num_workers=2)
 
 testset = torchvision.datasets.ImageFolder(root='./outputs/val', transform=transform)
-testloader = torch.utils.data.DataLoader(testset, shuffle=False, batch_size=4, num_workers=2)
+testloader = torch.utils.data.DataLoader(testset, shuffle=False, batch_size=16, num_workers=2)
 
 classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise', 'uncertain')
 
@@ -34,7 +34,7 @@ if args.model == 'MobileNet' :
 
 summary(model, (3,224,224))
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
+optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9, weight_decay=1e-4)
 
 max_accuracy = 0.0
 
@@ -62,12 +62,13 @@ for epoch in range(90):  # loop over the dataset multiple times
 
         # print statistics
         running_loss += loss.data[0]
-        if i % 5 == 0:    # print every 2000 mini-batches
+        if i % 500 == 0:    # print every 2000 mini-batches
             print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 100))
             running_loss = 0.0
-            
-        if i == 25 :
+        
+        if i == 150:
             break
+            
 
 
     print('finished epoch %d' % epoch)

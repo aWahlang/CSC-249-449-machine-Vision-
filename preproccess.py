@@ -9,13 +9,21 @@ with open('validation.csv') as csvfile:
     face_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
     count = 1
     for row in readCSV:
+        
+        count += 1
+        
+        #if count < 333021 :
+            #continue
+        
         filename = row[0][row[0].index('/')+1:]
         emotion = row[6]
+        
+            
         src = "/home/daniel/Documents/affectnet-manual/" + filename
         
         
         print(str(count) + "/" + str(total) + "%")
-        count += 1
+        
         
         if os.path.exists(src) and src.endswith(".jpg"):
             image = cv2.imread(src)
