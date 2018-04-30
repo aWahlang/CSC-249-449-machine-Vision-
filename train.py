@@ -22,7 +22,7 @@ trainset = torchvision.datasets.ImageFolder(root='./outputs/train', transform=tr
 trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=16, num_workers=2)
 
 testset = torchvision.datasets.ImageFolder(root='./outputs/val', transform=transform)
-testloader = torch.utils.data.DataLoader(testset, shuffle=False, batch_size=16, num_workers=2)
+testloader = torch.utils.data.DataLoader(testset, shuffle=False, batch_size=4, num_workers=2)
 
 classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise', 'uncertain')
 
@@ -34,7 +34,7 @@ if args.model == 'MobileNet' :
 
 summary(model, (3,224,224))
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9, weight_decay=1e-4)
+optimizer = optim.SGD(model.parameters(), lr=.001, momentum=0.9, weight_decay=1e-4)
 
 max_accuracy = 0.0
 
@@ -62,12 +62,9 @@ for epoch in range(90):  # loop over the dataset multiple times
 
         # print statistics
         running_loss += loss.data[0]
-        if i % 500 == 0:    # print every 2000 mini-batches
+        if i % 10 == 0:    # print every 2000 mini-batches
             print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 100))
             running_loss = 0.0
-        
-        if i == 150:
-            break
             
 
 
