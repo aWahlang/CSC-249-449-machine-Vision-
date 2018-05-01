@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def shuffle(x, groups=3):
+def ChannelShuffle(x, groups=3):
     b, n, h, w = x.data.size()
 
     group_channels = n // groups
@@ -15,46 +15,47 @@ def shuffle(x, groups=3):
     return x
 
 class ShuffleUnit(nn.Module):
-    def __init__(self, inp, out, groups=3, stride=1):
+    def __init__(self, input_channels, output_channels, groups=3, stride=1):
         super(ShuffleUnit, self).__init__()
         
         self.stride = stride
         self.groups = groups
-        self.out = out
-        self.mid_out = self.out // 4
+        self.output_channels = output_channels
+        self.mid_channels = self.output_channels // 4
         
         self.padding=1
-        if stride==2:
-            self.out -= inp
+        
+        if stride == 2:
+            self.output_channels -= input_channels
             self.padding = 0
             
         first_group = self.groups
             
-        if inp==24:
+        if input_channels == 24:
             first_group = 1
             
         
-        self.group_conv1 = nn.Sequential(nn.Conv2d(inp, 
-                                                   self.mid_out, 
+        self.group_conv1 = nn.Sequential(nn.Conv2d(input_channels, 
+                                                   self.mid_channels, 
                                                    kernel_size=1, 
                                                    groups=first_group), 
-                                         nn.BatchNorm2d(self.mid_out))
+                                         nn.BatchNorm2d(self.mid_channels))
         
         
-        self.depthwise_conv = nn.Sequential(nn.Conv2d(self.mid_out, 
-                                                      self.mid_out, 
+        self.depthwise_conv = nn.Sequential(nn.Conv2d(self.mid_channels, 
+                                                      self.mid_channels, 
                                                       kernel_size=3, 
                                                       stride=self.stride, 
-                                                      groups=self.mid_out, 
+                                                      groups=self.mid_channels, 
                                                       bias=True), 
-                                            nn.BatchNorm2d(self.mid_out))
+                                            nn.BatchNorm2d(self.mid_channels))
 
-        self.group_conv2 = nn.Sequential(nn.Conv2d(self.mid_out, 
-                                                   self.out,
+        self.group_conv2 = nn.Sequential(nn.Conv2d(self.mid_channels, 
+                                                   self.output_channels,
                                                    kernel_size=1, 
                                                    groups=self.groups,
                                                    padding=self.padding), 
-                                         nn.BatchNorm2d(self.out), 
+                                         nn.BatchNorm2d(self.output_channels), 
                                          nn.ReLU())
         
     def forward(self, x):
@@ -98,17 +99,19 @@ class ShuffleNet(nn.Module):
             self.base = 384
             
             
+        stage2 = ShuffleUnit(24, self.base, groups=self.groups, stride=2)
         stage2_repeat = ShuffleUnit(self.base, self.base, groups=self.groups)
         
-        self.stage2 = nn.Sequential(ShuffleUnit(24, self.base, groups=self.groups, stride=2),
+        self.stage2 = nn.Sequential(stage2,
                                     stage2_repeat,
                                     stage2_repeat,
                                     stage2_repeat)
             
         
+        stage3 = ShuffleUnit(self.base, self.base*2, groups=self.groups, stride=2)
         stage3_repeat = ShuffleUnit(self.base*2, self.base*2, groups=self.groups)
         
-        self.stage3 = nn.Sequential(ShuffleUnit(self.base, self.base*2, groups=self.groups, stride=2),
+        self.stage3 = nn.Sequential(stage3,
                                     stage3_repeat,
                                     stage3_repeat,
                                     stage3_repeat,
@@ -117,9 +120,10 @@ class ShuffleNet(nn.Module):
                                     stage3_repeat,
                                     stage3_repeat)
         
+        stage4 = ShuffleUnit(self.base*2, self.base*4, groups=self.groups, stride=2)
         stage4_repeat = ShuffleUnit(self.base*4, self.base*4, groups=self.groups)
         
-        self.stage4 = nn.Sequential(ShuffleUnit(self.base*2, self.base*4, groups=self.groups, stride=2),
+        self.stage4 = nn.Sequential(stage4,
                                     stage4_repeat,
                                     stage4_repeat,
                                     stage4_repeat)

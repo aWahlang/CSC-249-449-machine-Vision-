@@ -2,11 +2,32 @@ import csv
 import cv2
 import re
 import os.path
+import argparse
 
-with open('validation.csv') as csvfile:
+
+parser = argparse.ArgumentParser(description='PyTorch Emotion Training- Preprocessing')
+
+parser.add_argument('--train', default="true", help='train: true or false')
+parser.add_argument('--csv', default="training.csv", help='train: true or false')
+parser.add_argument('--data', default="/home/daniel/Documents/affectnet-manual/", help='location of images')
+
+args = parser.parse_args()
+
+data_csv = args.csv
+
+datapath = args.data
+
+trainpath = "train"
+
+if args.train == False
+    trainpath = "val"
+    
+with open(data_csv) as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     total = 427298
     face_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
+    
+    
     count = 1
     for row in readCSV:
         
@@ -19,10 +40,11 @@ with open('validation.csv') as csvfile:
         emotion = row[6]
         
             
-        src = "/home/daniel/Documents/affectnet-manual/" + filename
+        src = datapath + filename
         
         
         print(str(count) + "/" + str(total) + "%")
+        
         
         
         if os.path.exists(src) and src.endswith(".jpg"):
@@ -35,39 +57,39 @@ with open('validation.csv') as csvfile:
                 face = cv2.resize(face, (224, 224)) 
         
                 if emotion == "0":
-                    dst = "outputs/val/neutral/" + filename
+                    dst = "outputs/" + trainpath + "/neutral/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "1":
-                    dst = "outputs/val/happy/" + filename
+                    dst = "outputs/" + trainpath + "/happy/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "2":
-                    dst = "outputs/val/sad/" + filename
+                    dst = "outputs/" + trainpath + "/sad/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "3":
-                    dst = "outputs/val/surprise/" + filename
+                    dst = "outputs/" + trainpath + "/surprise/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "4":
-                    dst = "outputs/val/fear/" + filename
+                    dst = "outputs/" + trainpath + "/fear/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "5":
-                    dst = "outputs/val/disgust/" + filename
+                    dst = "outputs/" + trainpath + "/disgust/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "6":
-                    dst = "outputs/val/anger/" + filename
+                    dst = "outputs/" + trainpath + "/anger/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "7":
-                    dst = "outputs/val/contempt/" + filename
+                    dst = "outputs/" + trainpath + "/contempt/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "9":
-                    dst = "outputs/val/uncertain/" + filename
+                    dst = "outputs/" + trainpath + "/uncertain/" + filename
                     cv2.imwrite(dst, face)
                     
                 
