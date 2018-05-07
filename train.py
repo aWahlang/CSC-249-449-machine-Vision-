@@ -61,7 +61,7 @@ for epoch in range(90):  # loop over the dataset multiple times
     
     model.train(True)
     
-    #adjust_learning_rate(optimizer, epoch)
+    adjust_learning_rate(optimizer, epoch)
     print("training data:")
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -88,9 +88,9 @@ for epoch in range(90):  # loop over the dataset multiple times
             print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 100))
             running_loss = 0.0
 
-
     print('finished epoch %d' % epoch)
     print('calculating accuracy')
+
     
     start_time = time.time()
 
@@ -113,13 +113,13 @@ for epoch in range(90):  # loop over the dataset multiple times
         image, labels = image.to(device), labels.to(device)
         output = model(Variable(image))
         _, predicted = torch.max(output.data, 1)
-        predicted = predicted.to("cpu")
         total += 1
-        class_total[label[0]] +=1
+        class_total[labels[0]] +=1
 
-        if (label[0] == predicted[0]):
+        if (labels[0] == predicted[0]):
             correct += 1
             class_correct[predicted[0]] += 1
+
 
     elapsed_time = time.time() - start_time
     accuracy = (100 * correct / total)
