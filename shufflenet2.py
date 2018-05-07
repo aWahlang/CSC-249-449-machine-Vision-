@@ -65,7 +65,7 @@ class ShuffleUnit(nn.Module):
             original = F.avg_pool2d(original, kernel_size=3, stride=2)
             
         x = self.group_conv1(x)
-        x = shuffle(x, self.groups)
+        x = ChannelShuffle(x, self.groups)
         x = self.depthwise_conv(x)
         x = self.group_conv2(x)
         

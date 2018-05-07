@@ -3,13 +3,14 @@ import cv2
 import re
 import os.path
 import argparse
-
+import random
 
 parser = argparse.ArgumentParser(description='PyTorch Emotion Training- Preprocessing')
 
 parser.add_argument('--train', default="true", help='train: true or false')
 parser.add_argument('--csv', default="training.csv", help='train: true or false')
 parser.add_argument('--data', default="/home/daniel/Documents/affectnet-manual/", help='location of images')
+parser.add_argument('--resume', default=-1, help='where to resume')
 
 args = parser.parse_args()
 
@@ -19,8 +20,7 @@ datapath = args.data
 
 trainpath = "train"
 
-if args.train == False
-    trainpath = "val"
+start_count = int(args.resume)
     
 with open(data_csv) as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
@@ -33,8 +33,17 @@ with open(data_csv) as csvfile:
         
         count += 1
         
-        #if count < 333021 :
-            #continue
+        if count < start_count :
+            continue
+        
+        trainpath = "train"
+
+        if args.train == False:
+            trainpath = "val"
+            
+        if random.random() < 0.2:
+            trainpath = "test"
+            
         
         filename = row[0][row[0].index('/')+1:]
         emotion = row[6]
@@ -44,6 +53,8 @@ with open(data_csv) as csvfile:
         
         
         print(str(count) + "/" + str(total) + "%")
+        
+       
         
         
         
