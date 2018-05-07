@@ -7,16 +7,19 @@ from torch.autograd import Variable
 import torch.optim as optim
 from shufflenet2 import ShuffleNet
 from mobilenet import MobileNet
-from torchsummary import summary
+#from torchsummary import summary
 import time
 
 
 parser = argparse.ArgumentParser(description='PyTorch Emotion Training')
 parser.add_argument('--model', default='ShuffleNet' , help='model: ShuffleNet or MobileNet')
+parser.add_argument('--lr', default=0.1, type=float, help='initial learning rate')
 
 args = parser.parse_args()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+print(device)
 
 model = ShuffleNet()
 
@@ -36,19 +39,26 @@ testloader = torch.utils.data.DataLoader(testset, shuffle=True, batch_size=1)
 
 classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise', 'uncertain')
 
-summary(model, (3,224,224))
+#summary(model, (3,224,224))
 
 
 criterion = nn.CrossEntropyLoss()
     
-optimizer = optim.SGD(model.parameters(), lr=.001, momentum=0.9, weight_decay=1e-4)
+optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
 max_accuracy = 0.0
 
+def adjust_learning_rate(optimizer, epoch):
+    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
+    lr = args.lr * (0.1 ** (epoch // 30))
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
 
 for epoch in range(90):  # loop over the dataset multiple times
     
     model.train(True)
+    
+    adjust_learning_rate(optimizer, epoch)
 
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -70,14 +80,11 @@ for epoch in range(90):  # loop over the dataset multiple times
         optimizer.step()
 
         # print statistics
-        running_loss += loss.data[0]
-        if i % 500 == 0:    # print every 2000 mini-batches
+        running_loss += loss.item()
+        if i % 1000 == 0:    # print every 2000 mini-batches
             print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 100))
             running_loss = 0.0
             
-            
-        if i == 25 :
-            break
             
 
 
@@ -101,13 +108,11 @@ for epoch in range(90):  # loop over the dataset multiple times
         count +=1
         image, label = data
         
-        if count > 50:
-            break
         
         image, labels = image.to(device), labels.to(device)
         output = model(Variable(image))
         _, predicted = torch.max(output.data, 1)
-        
+        predicted = predicted.to("cpu")
         total += 1
         class_total[label[0]] +=1
         
