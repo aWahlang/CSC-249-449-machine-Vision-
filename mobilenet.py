@@ -56,6 +56,6 @@ class MobileNet(nn.Module):
         x = x.view(-1, 1024)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.softmax(self.fc3(x))
+        x = F.softmax(self.fc3(x), dim = 1)
         return x
 
