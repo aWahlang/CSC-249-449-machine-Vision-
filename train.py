@@ -19,10 +19,11 @@ args = parser.parse_args()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-print("device:")
-print(device)
+print("device: " + str(device))
 
 model = ShuffleNet()
+
+print("Model: " + args.model)
 
 if args.model == 'MobileNet' :
     model = MobileNet()
@@ -97,10 +98,10 @@ for epoch in range(90):  # loop over the dataset multiple times
     model.train(False)
     
     correct = 0
-    total = 0.0001
+    total = 1
     
     class_correct = list(0. for i in range(9))
-    class_total = list(0. for i in range(9))
+    class_total = list(1. for i in range(9))
     
     count = 0
     
@@ -109,13 +110,13 @@ for epoch in range(90):  # loop over the dataset multiple times
         image, label = data
 
 
-        image, labels = image.to(device), labels.to(device)
+        image, label = image.to(device), label.to(device)
         output = model(Variable(image))
         _, predicted = torch.max(output.data, 1)
         total += 1
-        class_total[labels[0]] +=1
+        class_total[label[0]] +=1
 
-        if (labels[0] == predicted[0]):
+        if (label[0] == predicted[0]):
             correct += 1
             class_correct[predicted[0]] += 1
 
@@ -138,6 +139,7 @@ for epoch in range(90):  # loop over the dataset multiple times
         
     if stall_count > 4:
         learning_rate = learning_rate * 0.1
+        stall_count = 0
         for param_group in optimizer.param_groups:
             param_group['lr'] = learning_rate
         

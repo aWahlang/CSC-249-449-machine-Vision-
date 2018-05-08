@@ -92,17 +92,19 @@ with open(data_csv) as csvfile:
                     dst = "outputs/" + trainpath + "/fear/" + filename
                     cv2.imwrite(dst, face)
                     
-                    face = cv2.flip(face, 1)
-                    dst = "outputs/" + trainpath + "/fear/rev-" + filename
-                    cv2.imwrite(dst, face)
+                    if trainpath == "train":
+                        face = cv2.flip(face, 1)
+                        dst = "outputs/" + trainpath + "/fear/rev-" + filename
+                        cv2.imwrite(dst, face)
                     
                 elif emotion == "5":
                     dst = "outputs/" + trainpath + "/disgust/" + filename
                     cv2.imwrite(dst, face)
                     
-                    face = cv2.flip(face, 1)
-                    dst = "outputs/" + trainpath + "/disgust/rev-" + filename
-                    cv2.imwrite(dst, face)
+                    if trainpath == "train":
+                        face = cv2.flip(face, 1)
+                        dst = "outputs/" + trainpath + "/disgust/rev-" + filename
+                        cv2.imwrite(dst, face)
                     
                 elif emotion == "6":
                     dst = "outputs/" + trainpath + "/anger/" + filename
@@ -112,9 +114,10 @@ with open(data_csv) as csvfile:
                     dst = "outputs/" + trainpath + "/contempt/" + filename
                     cv2.imwrite(dst, face)
                     
-                    face = cv2.flip(face, 1)
-                    dst = "outputs/" + trainpath + "/contempt/rev-" + filename
-                    cv2.imwrite(dst, face)
+                    if trainpath == "train":
+                        face = cv2.flip(face, 1)
+                        dst = "outputs/" + trainpath + "/contempt/rev-" + filename
+                        cv2.imwrite(dst, face)
                     
                 elif emotion == "9":
                     dst = "outputs/" + trainpath + "/uncertain/" + filename
