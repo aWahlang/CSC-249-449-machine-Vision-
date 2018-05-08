@@ -41,8 +41,8 @@ with open(data_csv) as csvfile:
         if args.train == False:
             trainpath = "val"
             
-        #if random.random() < 0.2:
-            #trainpath = "test"
+        if random.random() < 0.2:
+            trainpath = "test"
             
         
         filename = row[0][row[0].index('/')+1:]
@@ -55,8 +55,7 @@ with open(data_csv) as csvfile:
         print(str(count) + "/" + str(total) + "%")
         
        
-        if emotion == "0" or emotion == "1" or emotion == "2" or emotion == "3" or emotion == "6" or emotion == "8" or emotion == "9" or emotion == "10":
-            continue
+      
         
         
         if os.path.exists(src) and src.endswith(".jpg"):
@@ -74,39 +73,51 @@ with open(data_csv) as csvfile:
                 face = cv2.flip(face, 1)
         
                 if emotion == "0":
-                    dst = "outputs/" + trainpath + "/neutral/rev-" + filename
+                    dst = "outputs/" + trainpath + "/neutral/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "1":
-                    dst = "outputs/" + trainpath + "/happy/rev-" + filename
+                    dst = "outputs/" + trainpath + "/happy/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "2":
-                    dst = "outputs/" + trainpath + "/sad/rev-" + filename
+                    dst = "outputs/" + trainpath + "/sad/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "3":
-                    dst = "outputs/" + trainpath + "/surprise/rev-" + filename
+                    dst = "outputs/" + trainpath + "/surprise/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "4":
+                    dst = "outputs/" + trainpath + "/fear/" + filename
+                    cv2.imwrite(dst, face)
+                    
+                    face = cv2.flip(face, 1)
                     dst = "outputs/" + trainpath + "/fear/rev-" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "5":
+                    dst = "outputs/" + trainpath + "/disgust/" + filename
+                    cv2.imwrite(dst, face)
+                    
+                    face = cv2.flip(face, 1)
                     dst = "outputs/" + trainpath + "/disgust/rev-" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "6":
-                    dst = "outputs/" + trainpath + "/anger/rev-" + filename
+                    dst = "outputs/" + trainpath + "/anger/" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "7":
+                    dst = "outputs/" + trainpath + "/contempt/" + filename
+                    cv2.imwrite(dst, face)
+                    
+                    face = cv2.flip(face, 1)
                     dst = "outputs/" + trainpath + "/contempt/rev-" + filename
                     cv2.imwrite(dst, face)
                     
                 elif emotion == "9":
-                    dst = "outputs/" + trainpath + "/uncertain/rev-" + filename
+                    dst = "outputs/" + trainpath + "/uncertain/" + filename
                     cv2.imwrite(dst, face)
                     
                 

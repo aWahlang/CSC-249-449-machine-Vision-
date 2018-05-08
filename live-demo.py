@@ -6,9 +6,12 @@ from torch.autograd import Variable
 import argparse
 
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 parser = argparse.ArgumentParser(description='PyTorch Emotion Training- Preprocessing')
 
-parser.add_argument('--modelPath', default="trained_models/ShuffleNet_131.pt", help='path of saved model')
+parser.add_argument('--modelPath', default="Trained_Models/ShuffleNet_130.pt", help='path of saved model')
 
 args = parser.parse_args()
 
@@ -22,7 +25,10 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean
 
 classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise', 'uncertain')
 
-model = torch.load(args.modelPath)
+model = torch.load(args.modelPath, map_location=str(device))
+
+
+model.to(device)
 
 while True:
     if not video_capture.isOpened():
@@ -51,6 +57,9 @@ while True:
         
         img_tensor = transform(face)
         img_tensor.unsqueeze_(0)
+        
+        img_tensor.to(device)
+
         img_variable = Variable(img_tensor)
         fc_out = model(img_variable)
         

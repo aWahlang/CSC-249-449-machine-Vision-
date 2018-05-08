@@ -46,16 +46,15 @@ classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 's
 #summary(model, (3,224,224))
 
 criterion = nn.CrossEntropyLoss()
+
+learning_rate = args.lr
     
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=1e-4)
 
 max_accuracy = 0.0
+        
+stall_count = 0
 
-def adjust_learning_rate(optimizer, epoch):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
 
 for epoch in range(90):  # loop over the dataset multiple times
     
@@ -133,3 +132,12 @@ for epoch in range(90):  # loop over the dataset multiple times
     if accuracy > max_accuracy :
         torch.save(model, args.model + ".pt")
         max_accuracy = accuracy
+        stall_count = 0
+    else:
+        stall_count +=1
+        
+    if stall_count > 4:
+        learning_rate = learning_rate * 0.1
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = learning_rate
+        
