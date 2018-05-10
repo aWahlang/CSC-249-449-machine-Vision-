@@ -11,7 +11,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser(description='PyTorch Emotion Training- Preprocessing')
 
-parser.add_argument('--modelPath', default="Trained_Models/ShuffleNet_130.pt", help='path of saved model')
+parser.add_argument('--modelPath', default="trained_models/ShuffleNet_130.pt", help='path of saved model')
 
 args = parser.parse_args()
 

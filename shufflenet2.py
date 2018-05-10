@@ -129,7 +129,7 @@ class ShuffleNet(nn.Module):
                                     stage4_repeat)
                         
         
-        self.fc = nn.Linear(self.base*4, 9)
+        self.fc = nn.Linear(self.base*4, 8)
      
     def forward(self, x):
         x = self.conv1(x)

@@ -37,12 +37,12 @@ print("loading data...")
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 trainset = torchvision.datasets.ImageFolder(root='./outputs/train', transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=64, num_workers=2)
+trainloader = torch.utils.data.DataLoader(trainset, shuffle=True, batch_size=64)
 
 testset = torchvision.datasets.ImageFolder(root='./outputs/val', transform=transform)
 testloader = torch.utils.data.DataLoader(testset, shuffle=True, batch_size=1)
 
-classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise', 'uncertain')
+classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise')
 
 #summary(model, (3,224,224))
 
@@ -61,7 +61,6 @@ for epoch in range(90):  # loop over the dataset multiple times
     
     model.train(True)
     
-    adjust_learning_rate(optimizer, epoch)
     print("training data:")
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -85,7 +84,7 @@ for epoch in range(90):  # loop over the dataset multiple times
         # print statistics
         running_loss += loss.item()
         if i % 500 == 0:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 100))
+            print('[%d, %5d] loss: %.3f' % (epoch, i, running_loss / 100))
             running_loss = 0.0
 
     print('finished epoch %d' % epoch)
@@ -100,8 +99,8 @@ for epoch in range(90):  # loop over the dataset multiple times
     correct = 0
     total = 1
     
-    class_correct = list(0. for i in range(9))
-    class_total = list(1. for i in range(9))
+    class_correct = list(0. for i in range(8))
+    class_total = list(1. for i in range(8))
     
     count = 0
     
@@ -126,7 +125,7 @@ for epoch in range(90):  # loop over the dataset multiple times
     print('Accuracy of the network on the test images: %d%%' % accuracy)
     print('Took %d seconds to validate' % elapsed_time)
 
-    for i in range(9):
+    for i in range(8):
         print('Accuracy of %9s : %2d%%' % (classes[i], 100 * class_correct[i] / class_total[i]))
     
     
