@@ -75,7 +75,7 @@ Xiangyu Zhang et. al [2] developed a similar model, that is based on a new archi
 
 The data we use to train our models for this project come from the AffectNet dataset [3]. The dataset consist of facial expression images that have been uniquely labeled into 8 different emotions, Anger, Contempt, Disgust, Fear, Happy, Neutral, Sad and Surprise. These emotions were based on the intensity of valence and arousal (dimensional model). The dataset consist of over 1 million images, however about 440,000 images were manually annotated. Our models were trained only on the manually annotated images.
 Each image was then resized to 224 x 224. The number of images labeled ‘Happy’ and “Neutral” in the dataset was much larger than any class about 3 times as many. To reduce the chances of overfitting, were generated mirror images for each of the other emotions in an effort to increase the number of images. We then reduced the number of images in the ‘Happy’  and ‘Neutral’ so that the outnumber the other classes by a maximum of 5000 images.
-An 80:20 split was then done on this set of images, to create the training set(1,82,576 images) and the testing set(45,644) images). A segregated test set which consisted a 100 randomly sampled images from each class was also created. 
+An 80:20 split was then done on this set of images, to create the training set (182,576 images) and the testing set(45,644) images). A segregated test set which consisted a 100 randomly sampled images from each class was also created. 
 
 
 %-------------------------------------------------------------------------
@@ -149,7 +149,7 @@ Every Depthwise convolution layer in followed by a pointwise convolution layer. 
 The total number of trainable parameters in the model is  3,260,600 with a memory requirement of 13.20 MegaBytes.   
 
 \subsection{ShuffleNet Model}
-Like MobileNets we chose to implement the ShuffleNet model ourselves using the PyTorch framework. The benefit of ShuffleNet is that we are able to create a network with many more layers than MobileNets, but with reduced computational complexity. This is due to the use of channel shuffles in the pointwise group convolutions. We trained the model on the recommended network structure in the original paper with a group number of 3.
+Like MobileNets we chose to implement the ShuffleNet model ourselves using the PyTorch framework. The benefit of ShuffleNet is that we are able to create a network with many more layers than MobileNets, but with reduced computational complexity. This is due to the use of channel shuffles in the pointwise group convolutions. The channel shuffles enable cross-group information flow across the different group covolution layers [3]. We trained the model on the recommended network structure in the original paper with a group number of 3.
 
 \begin{figure}[ht]
 \caption{ShuffleUnit with a kernel stride of 1 and a kernel stride of 2 [3]}
