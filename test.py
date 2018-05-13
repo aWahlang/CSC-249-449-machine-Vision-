@@ -32,7 +32,7 @@ print("loading data...")
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 
-testset = torchvision.datasets.ImageFolder(root='./outputs/test', transform=transform)
+testset = torchvision.datasets.ImageFolder(root='./outputs/val', transform=transform)
 testloader = torch.utils.data.DataLoader(testset, shuffle=True, batch_size=1)
 
 classes = ('anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise')
@@ -63,17 +63,17 @@ for data in testloader:
     class_total[label[0]] +=1
     
     class_map[label[0]][predicted[0]] += 1
-    
-    print(classes[label[0]] + " : " + classes[predicted[0]])
 
     if (label[0] == predicted[0]):
         correct += 1
         class_correct[predicted[0]] += 1
     
-    if count > 1000:
-        break
+    #if count > 1000:
+        #break
         
-    print('%2d / 45264' % count)
+    if count % 100 == 0:
+        
+        print('%2d / 2856' % count)
         
 
 
