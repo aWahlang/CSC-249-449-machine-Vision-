@@ -149,6 +149,20 @@ Every Depthwise convolution layer in followed by a pointwise convolution layer. 
 The total number of trainable parameters in the model is  3,260,600 with a memory requirement of 13.20 MegaBytes.   
 
 \subsection{ShuffleNet Model}
+Like MobileNets we chose to implement the ShuffleNet model ourselves using the PyTorch framework. The benefit of ShuffleNet is that we are able to create a network with many more layers than MobileNets, but with reduced computational complexity. This is due to the use of channel shuffles in the pointwise group convolutions. We trained the model on the recommended network structure in the original paper with a group number of 3.
+
+\begin{figure}[ht]
+\caption{ShuffleUnit with a kernel stride of 1 and a kernel stride of 2 [3]}
+\centering
+\includegraphics[width=0.35\textwidth]{shuffleunit}
+\end{figure}
+
+
+\begin{figure}[ht]
+\caption{Recommended ShuffleNet network in original paper [3]}
+\centering
+\includegraphics[width=0.5\textwidth]{shufflenet}
+\end{figure}
 
 \subsection{Model Training}
 Both the MobileNet and ShuffleNet models were trained on the training set for 40 epochs on CIRC Bluehive.
@@ -182,8 +196,8 @@ The performance of both our models on the  set of 100  sampled images from each 
 \includegraphics[width=0.4\textwidth]{SegregatedAcc}
 \end{figure}
 
-Both the MobileNest model and ShuffleNet model perform well when classifying images of the “Happy”, “Anger”, “Neutral” and “Sad” expressions. However ShuffleNet’s performance drops with the other expressions and MobileNet struggles.
-The facial differences between these expressions are more subtle. The classification of many facial features in these expressions tend to overlap with others. For example, facial expressions of Fear look similar to Surprise, while expressions of Contempt are similar to Neutral. The predictions of our models with these expressions are detailed in Figure \#2 .
+Both the MobileNets model and ShuffleNet model perform well when classifying images of the “Happy”, “Anger”, “Neutral” and “Sad” expressions. However ShuffleNet’s performance drops with the other expressions and MobileNet struggles.
+The facial differences between these expressions are more subtle. The classification of many facial features in these expressions tend to overlap with others. For example, facial expressions of Fear look similar to Surprise, while expressions of Contempt are similar to Neutral. The predictions of our models with these expressions are detailed in Figure \#4 .
 
 \begin{figure}[ht]
 \caption{Overlap of each emotion using ShuffleNet}
@@ -201,7 +215,7 @@ The differences between these expressions and the predicted expressions are subt
 This suggests that these fine differences are not identified by our models and that the sequence of convolutions that our model performs on the images are not enough to detect such subtle changes.
 
 \subsection{Real Time Performance}
-Real time video performance of our models is consistent with the performance on the Test set. The models classify the extracted facial images from the video source in an average of (time here) seconds. The models recognize the expressions, “Anger”, “Happy”, “Neutral” and “Sad” fairly well. However with expressions of “Contempt” and “Disgust”, the models switch between multiple predictions. During our testing, we experienced considerable lag when dealing with more than 2 faces. This is due to computational limitations of our systems and unoptimized facial detection. The Figures \#4, \#5 and \#6 are screenshots of the real time performance.
+Real time video performance of our models is consistent with the performance on the Test set. The models classify the extracted facial images from the video source in an average of (time here) seconds. The models recognize the expressions, “Anger”, “Happy”, “Neutral” and “Sad” fairly well. However with expressions of “Contempt” and “Disgust”, the models switch between multiple predictions. During our testing, we experienced considerable lag when dealing with more than 2 faces. This is due to computational limitations of our systems and unoptimized facial detection. The Figures \#6, \#7  and \#8 are screenshots of the real time performance.
 
 \begin{figure}[ht]
 \caption{Example of happy, neutral, and anger}
