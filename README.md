@@ -8,5 +8,5 @@ Emotion clasees: Happy, Sad, Angry, Disgust, Surprise, Fear, Neutral
 * PyTorch
 * Python 3
 
-## Run:
-python live-demo.py
+## Usage:
+python live-demo.py [-h] [path_to_model]
