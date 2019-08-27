@@ -9,4 +9,7 @@ Emotion clasees: Happy, Sad, Angry, Disgust, Surprise, Fear, Neutral
 * Python 3
 
 ## Usage:
+python live-demo.py
+
+(optional usage)
 python live-demo.py [-h] [path_to_model]
